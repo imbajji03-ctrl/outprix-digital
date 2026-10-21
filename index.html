@@ -13,7 +13,40 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Outprix Digital | Precision Performance Marketing & AI Search (GEO)</title>
+  <title>#1 Digital Marketing Agency Jaipur | Outprix Digital</title>
+  <meta name="description" content="Tired of zero leads? Jaipur's #1 digital marketing agency drives real ROI with precision Google Ads &amp; SEO. Stop losing money—Claim your Free Growth Audit today!" />
+  <meta name="keywords" content="performance marketing agency, digital marketing agency jaipur, google ads agency, real estate marketing" />
+  <link rel="canonical" href="https://outprixdigital.shop/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://outprixdigital.shop/" />
+  <meta property="og:title" content="#1 Digital Marketing Agency Jaipur | Outprix Digital" />
+  <meta property="og:description" content="Tired of zero leads? Jaipur's #1 digital marketing agency drives real ROI with precision Google Ads &amp; SEO. Stop losing money—Claim your Free Growth Audit today!" />
+  <meta property="og:image" content="https://outprixdigital.shop/assets/outprix-logo.png" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="#1 Digital Marketing Agency Jaipur | Outprix Digital" />
+  <meta name="twitter:description" content="Tired of zero leads? Jaipur's #1 digital marketing agency drives real ROI with precision Google Ads &amp; SEO. Stop losing money—Claim your Free Growth Audit today!" />
+  <meta name="twitter:image" content="https://outprixdigital.shop/assets/outprix-logo.png" />
+
+  <script>
+    // Immediate SEO Metadata Sync from SEO Dashboard LocalStorage
+    (function() {
+      try {
+        var savedPages = JSON.parse(localStorage.getItem('outprix_seo_pages') || '[]');
+        var home = savedPages.find(function(p) { return p.id === 'home'; });
+        if (home) {
+          if (home.title) document.title = home.title;
+          if (home.description) {
+            var mDesc = document.querySelector('meta[name="description"]');
+            if (mDesc) mDesc.setAttribute('content', home.description);
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>
   
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -1221,6 +1254,19 @@
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Dynamic SEO Metadata Sync (from LocalStorage Dashboard)
+      try {
+        var savedPages = JSON.parse(localStorage.getItem('outprix_seo_pages') || '[]');
+        var targetPage = savedPages.find(function(p) { return p.id === pageId; });
+        if (targetPage && targetPage.title) {
+          document.title = targetPage.title;
+        }
+        if (targetPage && targetPage.description) {
+          var m = document.querySelector('meta[name="description"]');
+          if (m) m.setAttribute('content', targetPage.description);
+        }
+      } catch(e) {}
 
       // Google Tag Manager Dynamic Virtual Pageview Tracking
       window.dataLayer = window.dataLayer || [];

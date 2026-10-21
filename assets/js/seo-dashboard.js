@@ -33,13 +33,13 @@
       name: 'Home Page',
       url: '/',
       canonicalUrl: 'https://outprixdigital.shop/',
-      title: 'Outprix Digital | Performance Marketing & Web Development Agency',
-      description: 'Outprix Digital is a premier growth and performance marketing agency helping high-growth brands and real estate businesses scale with ROI-driven campaigns and web solutions.',
+      title: '#1 Digital Marketing Agency Jaipur | Outprix Digital',
+      description: 'Tired of zero leads? Jaipur\'s #1 digital marketing agency drives real ROI with precision Google Ads & SEO. Stop losing money—Claim your Free Growth Audit today!',
       targetKeyword: 'performance marketing agency',
       h1Check: 'Pass (Single H1 detected)',
       altTextCheck: 'Pass (All hero images have descriptive alt text)',
       status: 'Optimised',
-      lastUpdated: '2026-10-18'
+      lastUpdated: '2026-10-21'
     },
     {
       id: 'about',
