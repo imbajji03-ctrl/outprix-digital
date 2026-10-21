@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ============================================================================
  * Outprix Digital - Private SEO Management Dashboard Script
  * Pure Vanilla JavaScript (Zero External Frameworks / Zero Dependencies)
@@ -44,8 +44,8 @@
     {
       id: 'about',
       name: 'About Us',
-      url: '/about.html',
-      canonicalUrl: 'https://outprixdigital.shop/about.html',
+      url: '/about',
+      canonicalUrl: 'https://outprixdigital.shop/about',
       title: 'About Outprix Digital | Founder-Led Boutique Growth Agency',
       description: 'Learn about Outprix Digital, founded by Bajrang Choudhary in Jaipur. Direct founder strategy, zero vanity fluff, and radical attribution.',
       targetKeyword: 'digital marketing company jaipur',
@@ -57,8 +57,8 @@
     {
       id: 'services',
       name: 'Services',
-      url: '/services.html',
-      canonicalUrl: 'https://outprixdigital.shop/services.html',
+      url: '/services',
+      canonicalUrl: 'https://outprixdigital.shop/services',
       title: 'Services & Strategic Growth Pillars | Outprix Digital',
       description: 'Explore Outprix Digital\'s six core growth pillars: AI Search Visibility (GEO), Performance Marketing, Meta Ads, SEO, and High-Intent Lead Generation.',
       targetKeyword: 'performance marketing agency',
@@ -70,8 +70,8 @@
     {
       id: 'faq',
       name: 'FAQ Section',
-      url: '/faq.html',
-      canonicalUrl: 'https://outprixdigital.shop/faq.html',
+      url: '/faq',
+      canonicalUrl: 'https://outprixdigital.shop/faq',
       title: 'Frequently Asked Questions | Outprix Digital',
       description: 'Clear answers to common questions about partnering with Outprix Digital, ad budgets, execution rhythm, and Generative Engine Optimization (GEO).',
       targetKeyword: 'real estate marketing faq',
@@ -83,8 +83,8 @@
     {
       id: 'contact',
       name: 'Contact Page',
-      url: '/contact.html',
-      canonicalUrl: 'https://outprixdigital.shop/contact.html',
+      url: '/contact',
+      canonicalUrl: 'https://outprixdigital.shop/contact',
       title: 'Contact & Schedule Strategy Call | Outprix Digital',
       description: 'Schedule a 30-minute growth strategy session with Bajrang Choudhary at Outprix Digital. Direct WhatsApp and inquiry form.',
       targetKeyword: 'hire performance marketer',
