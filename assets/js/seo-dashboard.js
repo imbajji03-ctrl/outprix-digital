@@ -44,54 +44,54 @@
     {
       id: 'about',
       name: 'About Us',
-      url: '/about',
-      canonicalUrl: 'https://outprixdigital.shop/about',
-      title: 'About Outprix Digital | Founded by Bajrang Choudhary',
-      description: 'Learn about Outprix Digital, our growth philosophy, and our founder Bajrang Choudhary. We engineer data-driven digital marketing strategies that deliver measurable impact.',
+      url: '/about.html',
+      canonicalUrl: 'https://outprixdigital.shop/about.html',
+      title: 'About Outprix Digital | Founder-Led Boutique Growth Agency',
+      description: 'Learn about Outprix Digital, founded by Bajrang Choudhary in Jaipur. Direct founder strategy, zero vanity fluff, and radical attribution.',
       targetKeyword: 'digital marketing company jaipur',
       h1Check: 'Pass (H1 present)',
       altTextCheck: 'Pass (Founder portrait includes alt text)',
       status: 'Needs Review',
-      lastUpdated: '2026-10-14'
+      lastUpdated: '2026-10-21'
     },
     {
       id: 'services',
       name: 'Services',
-      url: '/services',
-      canonicalUrl: 'https://outprixdigital.shop/services',
-      title: 'Our Services | Performance Marketing, Paid Ads & SEO | Outprix Digital',
-      description: 'Explore full-funnel digital marketing services: Meta ads, Google Search & Performance Max, custom web development, conversion rate optimization, and SEO.',
-      targetKeyword: 'real estate digital marketing agency',
+      url: '/services.html',
+      canonicalUrl: 'https://outprixdigital.shop/services.html',
+      title: 'Services & Strategic Growth Pillars | Outprix Digital',
+      description: 'Explore Outprix Digital\'s six core growth pillars: AI Search Visibility (GEO), Performance Marketing, Meta Ads, SEO, and High-Intent Lead Generation.',
+      targetKeyword: 'performance marketing agency',
       h1Check: 'Pass (H1 present)',
-      altTextCheck: 'Warning (2 service icons missing descriptive alt text)',
+      altTextCheck: 'Pass (Descriptive alt text verified)',
       status: 'Needs Review',
-      lastUpdated: '2026-10-16'
+      lastUpdated: '2026-10-21'
     },
     {
       id: 'faq',
       name: 'FAQ Section',
-      url: '/#faq',
-      canonicalUrl: 'https://outprixdigital.shop/#faq',
-      title: 'Frequently Asked Questions | Outprix Digital Marketing',
-      description: 'Get answers to common questions about hiring Outprix Digital, campaign ad budgets, real estate lead generation timelines, and our performance guarantee.',
+      url: '/faq.html',
+      canonicalUrl: 'https://outprixdigital.shop/faq.html',
+      title: 'Frequently Asked Questions | Outprix Digital',
+      description: 'Clear answers to common questions about partnering with Outprix Digital, ad budgets, execution rhythm, and Generative Engine Optimization (GEO).',
       targetKeyword: 'real estate marketing faq',
-      h1Check: 'Pass (Embedded FAQ heading hierarchy compliant)',
+      h1Check: 'Pass (H1 heading hierarchy compliant)',
       altTextCheck: 'Pass (No missing alt text)',
       status: 'Optimised',
-      lastUpdated: '2026-10-12'
+      lastUpdated: '2026-10-21'
     },
     {
       id: 'contact',
       name: 'Contact Page',
-      url: '/#contact',
-      canonicalUrl: 'https://outprixdigital.shop/#contact',
-      title: 'Contact Outprix Digital | Book a Free Growth Audit',
-      description: 'Ready to scale your business? Contact the Outprix Digital team or connect via WhatsApp for a personalized performance marketing and web architecture consultation.',
+      url: '/contact.html',
+      canonicalUrl: 'https://outprixdigital.shop/contact.html',
+      title: 'Contact & Schedule Strategy Call | Outprix Digital',
+      description: 'Schedule a 30-minute growth strategy session with Bajrang Choudhary at Outprix Digital. Direct WhatsApp and inquiry form.',
       targetKeyword: 'hire performance marketer',
       h1Check: 'Pass (H1 present)',
       altTextCheck: 'Pass (All icons and form assets tagged)',
       status: 'Optimised',
-      lastUpdated: '2026-10-19'
+      lastUpdated: '2026-10-21'
     }
   ];
 
