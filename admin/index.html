@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog Management Panel | Outprix Digital</title>
+  <link rel="icon" type="image/png" href="/assets/outprix-logo.png" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Tailwind CSS via allowlisted CDN -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+
+  <!-- Blog Admin Custom Stylesheet -->
+  <link rel="stylesheet" href="/assets/css/blog-admin.css" />
+</head>
+<body class="bg-[#05070D] text-slate-100 antialiased">
+
+  <!-- ==================== 1. ADMIN LOGIN LOCK SCREEN ==================== -->
+  <div id="login-overlay">
+    <div class="login-card">
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#1E6BFB] to-[#38BDF8] p-0.5 mx-auto mb-4 shadow-lg shadow-blue-500/30 flex items-center justify-center">
+        <div class="w-full h-full bg-[#070A12] rounded-2xl flex items-center justify-center text-2xl">🔐</div>
+      </div>
+      <h2 class="text-2xl font-extrabold text-white mb-1">Outprix Digital</h2>
+      <p class="text-xs text-slate-400 mb-6 font-mono">Blog Management Panel • Admin Access</p>
+
+      <form onsubmit="event.preventDefault(); OutprixBlogAdmin.login(document.getElementById('login-pass').value);" class="space-y-4 text-left">
+        <div>
+          <label class="form-label">Admin Security PIN / Password</label>
+          <input type="password" id="login-pass" class="form-input text-center text-lg tracking-widest" placeholder="••••••••" required />
+          <div class="text-[11px] text-slate-500 mt-1.5 text-center">Default credential: <code class="text-cyan-400 font-mono">outprix2026</code></div>
+        </div>
+        <button type="submit" class="btn btn-primary w-full py-3 font-bold text-sm uppercase tracking-wider">
+          Unlock Dashboard →
+        </button>
+        <button type="button" onclick="OutprixBlogAdmin.login('outprix2026')" class="btn btn-secondary w-full py-2 text-xs">
+          ⚡ One-Click Demo Login
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sidebar Backdrop for Mobile -->
+  <div class="sidebar-backdrop"></div>
+
+  <!-- ==================== 2. APP CONTAINER ==================== -->
+  <div class="app-container">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="/admin" class="flex items-center gap-2.5">
+          <img src="/assets/outprix-logo.png" alt="Outprix Digital" class="h-8 w-auto object-contain" onerror="this.src='/assets/outprix-logo.png'" />
+          <span class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest">BLOG CMS</span>
+        </a>
+      </div>
+
+      <div class="p-3">
+        <button onclick="OutprixBlogAdmin.navigate('create-blog')" class="btn btn-primary w-full py-2 text-xs uppercase tracking-wider font-bold shadow-md shadow-blue-500/20">
+          + Write New Blog
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Management</div>
+        <a class="nav-item active" data-view="dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" data-view="create-blog">
+          <span class="nav-icon">✍️</span>
+          <span>Create Blog</span>
+        </a>
+        <a class="nav-item" data-view="ai-generator">
+          <span class="nav-icon">✨</span>
+          <span>AI Blog Generator</span>
+          <span class="nav-badge text-[10px] bg-cyan-500/20 text-cyan-400">AI</span>
+        </a>
+
+        <div class="nav-section-title">Content Pipeline</div>
+        <a class="nav-item" data-view="all-blogs">
+          <span class="nav-icon">📚</span>
+          <span>All Blogs</span>
+          <span id="badge-all" class="nav-badge">0</span>
+        </a>
+        <a class="nav-item" data-view="drafts">
+          <span class="nav-icon">📝</span>
+          <span>Drafts</span>
+          <span id="badge-drafts" class="nav-badge text-amber-400">0</span>
+        </a>
+        <a class="nav-item" data-view="scheduled">
+          <span class="nav-icon">📅</span>
+          <span>Scheduled Posts</span>
+          <span id="badge-scheduled" class="nav-badge text-cyan-400">0</span>
+        </a>
+        <a class="nav-item" data-view="media-library">
+          <span class="nav-icon">🖼️</span>
+          <span>Media Library</span>
+        </a>
+
+        <div class="nav-section-title">Configuration</div>
+        <a class="nav-item" data-view="seo-settings">
+          <span class="nav-icon">🔍</span>
+          <span>SEO Settings</span>
+        </a>
+        <a class="nav-item" data-view="author-profile">
+          <span class="nav-icon">👤</span>
+          <span>Author Profile</span>
+        </a>
+        <a class="nav-item" data-view="website-settings">
+          <span class="nav-icon">⚙️</span>
+          <span>Website Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-full bg-blue-600/30 border border-blue-500/40 flex items-center justify-center text-xs font-bold text-cyan-400">OP</div>
+          <div class="text-xs">
+            <div class="font-bold text-white leading-tight">Admin User</div>
+            <div class="text-[10px] text-slate-500 font-mono">Outprix Digital</div>
+          </div>
+        </div>
+        <button onclick="OutprixBlogAdmin.logout()" class="text-slate-400 hover:text-rose-400 text-xs p-1" title="Sign Out">
+          🚪
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+      
+      <!-- TOP HEADER -->
+      <header class="top-header">
+        <div class="header-left">
+          <button id="mobile-sidebar-toggle" class="md:hidden text-slate-300 hover:text-white text-xl p-1" aria-label="Toggle Navigation">
+            ☰
+          </button>
+          <div class="text-xs font-mono text-slate-400 flex items-center gap-2">
+            <span>Blog Panel</span>
+            <span>/</span>
+            <span id="page-breadcrumb" class="text-cyan-400 font-semibold">Dashboard Overview</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <a href="/blog" target="_blank" class="btn btn-sm btn-secondary flex items-center gap-1.5" title="Open Public Blog Listing">
+            <span>🌐</span>
+            <span class="hidden sm:inline">View Public Blog</span>
+          </a>
+          <button onclick="OutprixBlogAdmin.openModal('upload-modal')" class="btn btn-sm btn-secondary flex items-center gap-1.5">
+            <span>📂</span>
+            <span class="hidden sm:inline">Upload Blog</span>
+          </button>
+          <button onclick="OutprixBlogAdmin.navigate('ai-generator')" class="btn btn-sm btn-primary flex items-center gap-1.5">
+            <span>✨</span>
+            <span class="hidden sm:inline">AI Generator</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT BODY -->
+      <main class="content-body">
+
+        <!-- ==================== VIEW 1: DASHBOARD OVERVIEW ==================== -->
+        <section id="view-dashboard" class="view-section active space-y-6">
+          
+          <!-- Quick Action Banner -->
+          <div class="quick-actions-banner">
+            <div>
+              <h2 class="text-xl font-bold text-white mb-1">Blog Management &amp; Content Engine</h2>
+              <p class="text-xs text-slate-300">Create, optimize, AI-draft, and publish digital marketing blogs for Outprix Digital.</p>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button onclick="OutprixBlogAdmin.navigate('create-blog')" class="btn btn-primary text-xs">
+                ✍️ Create Blog
+              </button>
+              <button onclick="OutprixBlogAdmin.navigate('ai-generator')" class="btn btn-secondary text-xs">
+                ✨ Generate with AI
+              </button>
+              <button onclick="OutprixBlogAdmin.openModal('upload-modal')" class="btn btn-secondary text-xs">
+                📂 Upload Blog (Doc/PDF)
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats 4 Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div>
+                <div class="text-xs font-mono uppercase text-slate-400">Total Published</div>
+                <div id="stat-total-published" class="text-3xl font-extrabold text-white mt-1">0</div>
+                <div class="text-[11px] text-emerald-400 mt-1">✓ Live on outprixdigital.shop</div>
+              </div>
+              <div class="stat-card-icon bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">📰</div>
+            </div>
+
+            <div class="stat-card">
+              <div>
+                <div class="text-xs font-mono uppercase text-slate-400">Draft Blogs</div>
+                <div id="stat-total-drafts" class="text-3xl font-extrabold text-amber-400 mt-1">0</div>
+                <div class="text-[11px] text-slate-400 mt-1">Pending review &amp; approval</div>
+              </div>
+              <div class="stat-card-icon bg-amber-500/10 text-amber-400 border border-amber-500/20">📝</div>
+            </div>
+
+            <div class="stat-card">
+              <div>
+                <div class="text-xs font-mono uppercase text-slate-400">Scheduled Posts</div>
+                <div id="stat-total-scheduled" class="text-3xl font-extrabold text-cyan-400 mt-1">0</div>
+                <div class="text-[11px] text-cyan-400 mt-1">Scheduled for upcoming dates</div>
+              </div>
+              <div class="stat-card-icon bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">📅</div>
+            </div>
+
+            <div class="stat-card">
+              <div>
+                <div class="text-xs font-mono uppercase text-slate-400">Created This Month</div>
+                <div id="stat-created-month" class="text-3xl font-extrabold text-white mt-1">0</div>
+                <div class="text-[11px] text-slate-400 mt-1">Content velocity index</div>
+              </div>
+              <div class="stat-card-icon bg-blue-500/10 text-blue-400 border border-blue-500/20">🚀</div>
+            </div>
+          </div>
+
+          <!-- Grid: Recent Posts & Calendar -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Left 8 cols: Recent Posts Table -->
+            <div class="lg:col-span-8 card space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="card-title">Recent Blog Posts</h3>
+                  <p class="card-subtitle">Latest articles in your publication pipeline</p>
+                </div>
+                <button onclick="OutprixBlogAdmin.navigate('all-blogs')" class="text-xs text-cyan-400 hover:text-white font-semibold">
+                  View All Blogs →
+                </button>
+              </div>
+
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Title &amp; Slug</th>
+                      <th>Category</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-posts-body">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Right 4 cols: Scheduled Content Calendar -->
+            <div class="lg:col-span-4 card space-y-4">
+              <div>
+                <h3 class="card-title">Content Calendar</h3>
+                <p class="card-subtitle">Scheduled posts deployment rhythm</p>
+              </div>
+
+              <div class="calendar-widget">
+                <div class="calendar-header">
+                  <span id="calendar-month-label">October 2026</span>
+                  <span class="text-xs text-cyan-400 font-mono">Jaipur IST</span>
+                </div>
+                <div class="calendar-grid">
+                  <div class="calendar-day-label">Su</div>
+                  <div class="calendar-day-label">Mo</div>
+                  <div class="calendar-day-label">Tu</div>
+                  <div class="calendar-day-label">We</div>
+                  <div class="calendar-day-label">Th</div>
+                  <div class="calendar-day-label">Fr</div>
+                  <div class="calendar-day-label">Sa</div>
+                </div>
+                <div id="dashboard-calendar-grid" class="calendar-grid mt-1">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+
+              <div class="p-3 rounded-lg bg-slate-900 border border-white/5 text-xs text-slate-400 space-y-1">
+                <div class="text-white font-semibold flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  Scheduled Post Indicator
+                </div>
+                <div>Dates highlighted in cyan contain scheduled posts. Click a date to inspect or edit.</div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 2: CREATE / EDIT BLOG ==================== -->
+        <section id="view-create-blog" class="view-section space-y-6">
+          <input type="hidden" id="edit-blog-id" value="" />
+
+          <!-- Top Toolbar with Actions -->
+          <div class="card flex flex-wrap items-center justify-between gap-4 p-4">
+            <div class="flex items-center gap-3">
+              <span id="edit-status-badge" class="badge badge-draft">Draft</span>
+              <span class="text-xs text-slate-400 font-mono">Autosave ready</span>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button type="button" onclick="OutprixBlogAdmin.previewBlog()" class="btn btn-sm btn-secondary">
+                👁️ Preview
+              </button>
+              <button type="button" onclick="OutprixBlogAdmin.saveBlog('Draft')" class="btn btn-sm btn-secondary">
+                💾 Save Draft
+              </button>
+              <button type="button" onclick="OutprixBlogAdmin.scheduleBlogNow()" class="btn btn-sm btn-secondary text-cyan-400">
+                📅 Schedule Post
+              </button>
+              <button type="button" onclick="OutprixBlogAdmin.publishBlogNow()" class="btn btn-sm btn-emerald">
+                🚀 Publish Now
+              </button>
+              <button type="button" onclick="OutprixBlogAdmin.exportPublicHtml(document.getElementById('edit-blog-id').value)" class="btn btn-sm btn-secondary" title="Export clean standalone index.html">
+                📥 Export HTML
+              </button>
+            </div>
+          </div>
+
+          <div class="editor-layout">
+            
+            <!-- LEFT COLUMN: Main Blog Editor -->
+            <div class="space-y-6">
+              
+              <div class="card space-y-4">
+                <div class="form-group">
+                  <label class="form-label">Blog Title <span class="required">*</span></label>
+                  <input type="text" id="edit-title" class="form-input text-base sm:text-lg font-bold" placeholder="e.g. Generative Engine Optimization (GEO) in Jaipur: Complete 2026 Strategy" />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="form-group">
+                    <label class="form-label">URL Slug <span class="required">*</span></label>
+                    <div class="flex items-center gap-1">
+                      <span class="text-xs font-mono text-slate-500">/blog/</span>
+                      <input type="text" id="edit-slug" class="form-input text-xs font-mono" placeholder="geo-strategy-jaipur" />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="edit-category" class="form-select text-xs">
+                      <option>Performance Marketing</option>
+                      <option>AI Search (GEO)</option>
+                      <option>SEO</option>
+                      <option>Meta Ads</option>
+                      <option>Google Ads</option>
+                      <option>Content Strategy</option>
+                      <option>Branding</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="form-group">
+                    <label class="form-label">Primary Target Keyword <span class="required">*</span></label>
+                    <input type="text" id="edit-primary-kw" class="form-input text-xs" placeholder="e.g. generative engine optimization jaipur" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Secondary Keywords (comma separated)</label>
+                    <input type="text" id="edit-secondary-kws" class="form-input text-xs" placeholder="e.g. ai citations, chatgpt search, schema seo" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- BODY CONTENT EDITOR -->
+              <div class="card p-0 overflow-hidden">
+                <div class="editor-toolbar">
+                  <button type="button" class="toolbar-btn font-bold" onclick="OutprixBlogAdmin.insertIntoEditor('<h2>', '</h2>')" title="Heading 2">H2</button>
+                  <button type="button" class="toolbar-btn font-bold" onclick="OutprixBlogAdmin.insertIntoEditor('<h3>', '</h3>')" title="Heading 3">H3</button>
+                  <button type="button" class="toolbar-btn font-bold" onclick="OutprixBlogAdmin.insertIntoEditor('<strong>', '</strong>')" title="Bold">B</button>
+                  <button type="button" class="toolbar-btn italic" onclick="OutprixBlogAdmin.insertIntoEditor('<em>', '</em>')" title="Italic">I</button>
+                  <span class="text-slate-600 px-1">|</span>
+                  <button type="button" class="toolbar-btn" onclick="OutprixBlogAdmin.insertIntoEditor('<ul>\n  <li>', '</li>\n</ul>')" title="Bullet List">• List</button>
+                  <button type="button" class="toolbar-btn" onclick="OutprixBlogAdmin.insertIntoEditor('<ol>\n  <li>', '</li>\n</ol>')" title="Numbered List">1. List</button>
+                  <button type="button" class="toolbar-btn" onclick="OutprixBlogAdmin.insertIntoEditor('<blockquote>', '</blockquote>')" title="Quote">” Quote</button>
+                  <span class="text-slate-600 px-1">|</span>
+                  <button type="button" class="toolbar-btn text-cyan-400 font-semibold" onclick="OutprixBlogAdmin.insertComparisonTableSnippet()" title="Insert Comparison Table">📊 Table</button>
+                  <button type="button" class="toolbar-btn text-cyan-400 font-semibold" onclick="OutprixBlogAdmin.insertVisualSuggestionSnippet()" title="Insert Visual Suggestion Box">🖼️ Visual Suggestion</button>
+                  <button type="button" class="toolbar-btn text-blue-400 font-semibold" onclick="OutprixBlogAdmin.insertCtaSnippet()" title="Insert Outprix CTA Block">🎯 CTA Block</button>
+                  <button type="button" class="toolbar-btn text-emerald-400 font-semibold" onclick="OutprixBlogAdmin.insertIntoEditor('<a href=\x22/services\x22 class=\x22text-[#38BDF8] underline\x22>', '</a>')" title="Internal Link">🔗 Link</button>
+                </div>
+                <textarea id="edit-content" class="editor-body-textarea" placeholder="Write or paste your blog content here in HTML or Markdown..."></textarea>
+              </div>
+
+              <!-- EDITABLE CTA SECTION -->
+              <div class="card space-y-4">
+                <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                  <div>
+                    <h3 class="card-title text-sm">Blog Call-To-Action (CTA) Block</h3>
+                    <p class="card-subtitle text-xs">Standard Outprix conversion block displayed inside and at the end of the blog</p>
+                  </div>
+                  <span class="badge badge-category">Conversion Block</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="form-group">
+                    <label class="form-label">CTA Headline</label>
+                    <input type="text" id="edit-cta-headline" class="form-input text-xs" value="Ready to grow your business online?" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">CTA Subtext</label>
+                    <input type="text" id="edit-cta-subtext" class="form-input text-xs" value="Get a practical digital marketing strategy designed for your business goals." />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="p-3 rounded-lg bg-slate-900 border border-white/5 space-y-2">
+                    <span class="text-xs font-mono text-cyan-400 font-semibold">Button 1 (Consultation)</span>
+                    <input type="text" id="edit-cta-btn1-text" class="form-input text-xs" value="Get a Free Consultation" />
+                    <input type="text" id="edit-cta-btn1-link" class="form-input text-xs font-mono" value="/contact" />
+                  </div>
+                  <div class="p-3 rounded-lg bg-slate-900 border border-white/5 space-y-2">
+                    <span class="text-xs font-mono text-emerald-400 font-semibold">Button 2 (WhatsApp Direct)</span>
+                    <input type="text" id="edit-cta-btn2-text" class="form-input text-xs" value="Chat on WhatsApp" />
+                    <input type="text" id="edit-cta-btn2-link" class="form-input text-xs font-mono" value="https://wa.me/919460382804" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ MANAGER -->
+              <div class="card space-y-4">
+                <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                  <div>
+                    <h3 class="card-title text-sm">Practical FAQ Section (Schema Ready)</h3>
+                    <p class="card-subtitle text-xs">4–6 questions answering high-intent customer inquiries</p>
+                  </div>
+                  <button type="button" onclick="OutprixBlogAdmin.addFaq()" class="btn btn-sm btn-secondary">
+                    + Add FAQ Item
+                  </button>
+                </div>
+                <div id="faq-items-container">
+                  <!-- FAQs injected by JS -->
+                </div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: SEO & Metadata Sidebar -->
+            <div class="space-y-6">
+              
+              <!-- Live SEO Score Gauge -->
+              <div class="card space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono uppercase text-slate-400">SEO Health Score</span>
+                  <span id="seo-score-value" class="text-lg font-mono font-bold text-cyan-400">0/100</span>
+                </div>
+                <div class="seo-progress-bar">
+                  <div id="seo-score-fill" class="seo-progress-fill" style="width: 0%; background-color: var(--accent-rose);"></div>
+                </div>
+
+                <div class="border-t border-white/5 pt-2 space-y-1">
+                  <div id="seo-chk-kw-title" class="seo-check-item fail"><span class="check-icon">✕</span> Primary KW in H1 Title</div>
+                  <div id="seo-chk-kw-slug" class="seo-check-item fail"><span class="check-icon">✕</span> Primary KW in URL Slug</div>
+                  <div id="seo-chk-kw-meta" class="seo-check-item fail"><span class="check-icon">✕</span> Primary KW in Meta Title &amp; Desc</div>
+                  <div id="seo-chk-kw-intro" class="seo-check-item fail"><span class="check-icon">✕</span> Primary KW in Introduction</div>
+                  <div id="seo-chk-kw-h2" class="seo-check-item fail"><span class="check-icon">✕</span> Primary KW in at least 1 H2</div>
+                  <div id="seo-chk-wordcount" class="seo-check-item fail"><span class="check-icon">✕</span> Comprehensive Length (600+ words)</div>
+                </div>
+              </div>
+
+              <!-- Meta Data -->
+              <div class="card space-y-4">
+                <h3 class="card-title text-sm">Search Engine Snippet</h3>
+
+                <div class="form-group">
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="form-label mb-0">Meta Title</label>
+                    <span id="meta-title-count" class="text-xs font-mono text-slate-500">0/60</span>
+                  </div>
+                  <input type="text" id="edit-meta-title" class="form-input text-xs" placeholder="SEO Title (50-60 chars)" />
+                </div>
+
+                <div class="form-group">
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="form-label mb-0">Meta Description</label>
+                    <span id="meta-desc-count" class="text-xs font-mono text-slate-500">0/160</span>
+                  </div>
+                  <textarea id="edit-meta-desc" class="form-textarea text-xs" rows="3" placeholder="Summary for Google and AI crawlers (140-160 chars)"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Featured Image URL</label>
+                  <div class="flex items-center gap-2">
+                    <input type="text" id="edit-featured-img" class="form-input text-xs" value="/assets/outprix-logo.png" />
+                    <button type="button" onclick="OutprixBlogAdmin.navigate('media-library')" class="btn btn-sm btn-secondary">Pick</button>
+                  </div>
+                  <div class="mt-2 rounded-lg bg-slate-900 border border-white/5 overflow-hidden max-h-28 flex items-center justify-center">
+                    <img id="edit-featured-img-preview" src="/assets/outprix-logo.png" alt="Featured Preview" class="w-full h-full object-cover max-h-28" onerror="this.src='/assets/outprix-logo.png'" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Publishing Details -->
+              <div class="card space-y-4">
+                <h3 class="card-title text-sm">Publishing Schedule</h3>
+
+                <div class="form-group">
+                  <label class="form-label">Author Name</label>
+                  <input type="text" id="edit-author-name" class="form-input text-xs" value="Outprix Digital Team" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Publish Date &amp; Time (IST)</label>
+                  <input type="datetime-local" id="edit-publish-date" class="form-input text-xs font-mono" />
+                </div>
+              </div>
+
+              <!-- Visual Suggestions Generated by AI -->
+              <div class="card space-y-3">
+                <h3 class="card-title text-sm">Visual Suggestions</h3>
+                <p class="card-subtitle text-xs">Image ideas, placements, alt text &amp; captions</p>
+                <div id="visual-suggestions-container">
+                  <!-- Injected by JS -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 3: AI BLOG GENERATOR ==================== -->
+        <section id="view-ai-generator" class="view-section space-y-6">
+          <div class="card space-y-4 max-w-4xl mx-auto">
+            <div class="border-b border-white/5 pb-4">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-mono font-bold mb-2">
+                ✨ EEAT-COMPLIANT AI BLOG ENGINE
+              </div>
+              <h2 class="text-2xl font-bold text-white">Generate High-Impact SEO Blog Drafts</h2>
+              <p class="text-xs text-slate-400 mt-1">
+                Generates a complete, structured draft with short paragraphs, clear H1/H2 headings, comparison table, visual suggestions, FAQs, Outprix CTA block, and strict zero-superlatives rules.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="form-group">
+                <label class="form-label">Primary Keyword <span class="required">*</span></label>
+                <input type="text" id="ai-primary-kw" class="form-input text-sm font-semibold" placeholder="e.g. generative engine optimization jaipur" />
+                <div class="form-help">Will be naturally placed in H1, intro, 2 H2s, meta tags, and conclusion.</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Secondary Keywords</label>
+                <input type="text" id="ai-secondary-kws" class="form-input text-sm" placeholder="e.g. ai search jaipur, chatgpt citations, schema seo" />
+                <div class="form-help">Comma-separated terms to distribute across body paragraphs.</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="form-group">
+                <label class="form-label">Target Location</label>
+                <input type="text" id="ai-target-location" class="form-input text-sm" value="Jaipur, Rajasthan" />
+                <div class="form-help">Grounded in local business realities without real-estate bias.</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Topic / Title Idea (Optional)</label>
+                <input type="text" id="ai-topic-idea" class="form-input text-sm" placeholder="Leave empty for auto-generated high-CTR title" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="form-group">
+                <label class="form-label">Target Audience</label>
+                <input type="text" id="ai-target-audience" class="form-input text-sm" value="Business founders, marketing heads, and local entrepreneurs" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Preferred CTA</label>
+                <input type="text" id="ai-preferred-cta" class="form-input text-sm" value="Get a Free Consultation" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Internal Pages to Link</label>
+              <div class="flex items-center gap-4 flex-wrap text-xs text-slate-300">
+                <label class="flex items-center gap-1.5"><input type="checkbox" checked class="rounded" /> /services (Core Offerings)</label>
+                <label class="flex items-center gap-1.5"><input type="checkbox" checked class="rounded" /> /about (Founder &amp; Philosophy)</label>
+                <label class="flex items-center gap-1.5"><input type="checkbox" checked class="rounded" /> /contact (Strategy Call)</label>
+                <label class="flex items-center gap-1.5"><input type="checkbox" checked class="rounded" /> /faq (Direct Answers)</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Optional Notes or Instructions</label>
+              <textarea id="ai-notes" class="form-textarea text-xs" rows="2" placeholder="e.g. Focus on high attribution and transparent paid media budgets..."></textarea>
+            </div>
+
+            <div class="pt-2">
+              <button type="button" id="btn-generate-ai" onclick="OutprixBlogAdmin.generateAiBlog()" class="btn btn-primary w-full py-3 text-sm font-bold uppercase tracking-wider">
+                ✨ Generate SEO Blog Draft with AI
+              </button>
+            </div>
+
+            <!-- Progress State -->
+            <div id="ai-generation-progress" class="hidden p-6 rounded-2xl bg-slate-900 border border-cyan-500/30 text-center space-y-3">
+              <div class="w-8 h-8 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin mx-auto"></div>
+              <div id="ai-progress-status" class="text-xs font-mono text-cyan-400">Analyzing keyword intent...</div>
+              <div class="text-[11px] text-slate-500">Adhering strictly to EEAT, short paragraphs, and no unverified claims.</div>
+            </div>
+
+            <!-- Preview Card of Generated Draft -->
+            <div id="ai-generation-preview" class="hidden p-6 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-4">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <span class="badge badge-draft">Draft Created</span>
+                  <h3 id="ai-preview-title" class="text-lg font-bold text-white mt-1">Generated Title</h3>
+                  <div id="ai-preview-meta" class="text-xs text-slate-400 font-mono mt-0.5">Meta</div>
+                </div>
+                <button type="button" onclick="OutprixBlogAdmin.loadAiDraftIntoEditor()" class="btn btn-emerald text-xs">
+                  Review &amp; Edit in Editor →
+                </button>
+              </div>
+              <div id="ai-preview-body" class="text-xs text-slate-300 leading-relaxed bg-black/40 p-4 rounded-xl max-h-60 overflow-y-auto font-mono">
+                <!-- Snippet -->
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 4: ALL BLOGS TABLE ==================== -->
+        <section id="view-all-blogs" class="view-section space-y-6">
+          <div class="card flex flex-wrap items-center justify-between gap-4 p-4">
+            <div class="flex items-center gap-3 flex-1 min-w-[260px]">
+              <input type="text" id="blog-search-input" class="form-input text-xs" placeholder="Search by title, keyword, or slug..." />
+              <select id="blog-category-filter" class="form-select text-xs w-48">
+                <option value="All">All Categories</option>
+                <option value="Performance Marketing">Performance Marketing</option>
+                <option value="AI Search (GEO)">AI Search (GEO)</option>
+                <option value="SEO">SEO</option>
+                <option value="Meta Ads">Meta Ads</option>
+                <option value="Google Ads">Google Ads</option>
+                <option value="Content Strategy">Content Strategy</option>
+              </select>
+            </div>
+            <button onclick="OutprixBlogAdmin.navigate('create-blog')" class="btn btn-sm btn-primary">
+              + New Blog
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title &amp; Slug</th>
+                  <th>Primary Keyword</th>
+                  <th>Author</th>
+                  <th>Status</th>
+                  <th>Dates</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="all-blogs-table-body">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 5: DRAFTS VIEW ==================== -->
+        <section id="view-drafts" class="view-section space-y-6">
+          <div class="card p-4 flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-bold text-white">Draft Posts Requiring Approval</h2>
+              <p class="text-xs text-slate-400">Review AI drafts and uploaded files before publishing to the public site.</p>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title &amp; Slug</th>
+                  <th>Primary Keyword</th>
+                  <th>Author</th>
+                  <th>Status</th>
+                  <th>Dates</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="drafts-table-body">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 6: SCHEDULED POSTS VIEW ==================== -->
+        <section id="view-scheduled" class="view-section space-y-6">
+          <div class="card p-4 flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-bold text-white">Scheduled Publications</h2>
+              <p class="text-xs text-slate-400">Posts scheduled to deploy automatically at specified dates and times.</p>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title &amp; Slug</th>
+                  <th>Primary Keyword</th>
+                  <th>Author</th>
+                  <th>Status</th>
+                  <th>Dates</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="scheduled-table-body">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 7: MEDIA LIBRARY ==================== -->
+        <section id="view-media-library" class="view-section space-y-6">
+          <div class="card p-4 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-bold text-white">Media Library</h2>
+              <p class="text-xs text-slate-400">Upload and manage featured images, visual diagrams, and brand assets.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="file" id="media-file-input" accept="image/*" class="hidden" onchange="OutprixBlogAdmin.handleMediaUpload(this.files[0])" />
+              <button onclick="document.getElementById('media-file-input').click()" class="btn btn-sm btn-primary">
+                ⬆️ Upload Image
+              </button>
+              <button onclick="OutprixBlogAdmin.addMediaUrlPrompt()" class="btn btn-sm btn-secondary">
+                🔗 Add Image URL
+              </button>
+            </div>
+          </div>
+
+          <div id="media-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 8: SEO SETTINGS ==================== -->
+        <section id="view-seo-settings" class="view-section space-y-6">
+          <div class="card max-w-3xl mx-auto space-y-5">
+            <div class="border-b border-white/5 pb-3">
+              <h2 class="text-lg font-bold text-white">Global Blog SEO &amp; Schema Settings</h2>
+              <p class="text-xs text-slate-400">Default metadata configurations applied across all Outprix Digital articles.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Site Canonical Domain</label>
+              <input type="text" class="form-input text-xs font-mono" value="https://outprixdigital.shop" readonly />
+              <div class="form-help">Clean folder-based URLs (e.g. https://outprixdigital.shop/blog/slug)</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Default Meta Title Brand Suffix</label>
+              <input type="text" class="form-input text-xs" value=" | Outprix Digital" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Publisher Schema.org Entity</label>
+              <div class="p-4 rounded-xl bg-slate-900 border border-white/5 font-mono text-xs text-slate-300 space-y-1">
+                <div>@type: "Organization"</div>
+                <div>name: "Outprix Digital"</div>
+                <div>url: "https://outprixdigital.shop"</div>
+                <div>founder: "Bajrang Choudhary"</div>
+                <div>location: "Jaipur, Rajasthan, India"</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Sitemap Auto-Sync</label>
+              <p class="text-xs text-slate-400">All published articles are registered for inclusion in <code class="text-cyan-400">/sitemap.xml</code> with weekly crawl frequency and priority 0.8.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 9: AUTHOR PROFILE ==================== -->
+        <section id="view-author-profile" class="view-section space-y-6">
+          <div class="card max-w-2xl mx-auto space-y-5">
+            <div class="border-b border-white/5 pb-3">
+              <h2 class="text-lg font-bold text-white">Default Author Profile</h2>
+              <p class="text-xs text-slate-400">Appears in the author bio box on every published Outprix Digital blog post.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Author Name</label>
+              <input type="text" id="author-name" class="form-input text-sm font-semibold" value="Outprix Digital Team" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Author Professional Role</label>
+              <input type="text" id="author-role" class="form-input text-xs" value="Growth Strategists &amp; Media Buyers" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Author Bio (EEAT Compliant)</label>
+              <textarea id="author-bio" class="form-textarea text-xs" rows="3">Outprix Digital helps businesses grow through SEO, Google Ads, social media marketing, content marketing, branding, and performance-driven digital strategies in Jaipur.</textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Author Image / Avatar URL</label>
+              <div class="flex items-center gap-3">
+                <img id="author-avatar-preview" src="/assets/outprix-logo.png" alt="Author" class="w-12 h-12 rounded-full object-cover bg-slate-900 border border-white/10 flex-shrink-0" onerror="this.src='/assets/outprix-logo.png'" />
+                <input type="text" id="author-avatar" class="form-input text-xs" value="/assets/outprix-logo.png" />
+              </div>
+            </div>
+
+            <button type="button" onclick="OutprixBlogAdmin.saveAuthorProfile()" class="btn btn-primary text-xs py-2.5">
+              💾 Save Author Profile
+            </button>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 10: WEBSITE SETTINGS ==================== -->
+        <section id="view-website-settings" class="view-section space-y-6">
+          <div class="card max-w-2xl mx-auto space-y-5">
+            <div class="border-b border-white/5 pb-3">
+              <h2 class="text-lg font-bold text-white">Website &amp; Panel Settings</h2>
+              <p class="text-xs text-slate-400">Security credentials, external AI API connections, and data backup.</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Admin Security Password</label>
+              <input type="text" id="settings-admin-pass" class="form-input text-xs font-mono" value="outprix2026" />
+              <div class="form-help">Password used to unlock this blog management dashboard.</div>
+            </div>
+
+            <div class="border-t border-white/5 pt-4">
+              <h3 class="text-sm font-bold text-white mb-2">Optional External AI API Integration</h3>
+              <p class="text-xs text-slate-400 mb-4">The panel includes a built-in high-quality AI generator that runs 100% locally. You can optionally connect live LLM APIs:</p>
+
+              <div class="form-group">
+                <label class="form-label">AI Engine Mode</label>
+                <select id="settings-ai-model" class="form-select text-xs">
+                  <option value="built-in">Built-in Rule-Engine (Fast, Local &amp; 100% Free)</option>
+                  <option value="openai">OpenAI (GPT-4o)</option>
+                  <option value="gemini">Google Gemini (Gemini Pro)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">OpenAI API Key (Optional)</label>
+                <input type="password" id="settings-openai-key" class="form-input text-xs font-mono" placeholder="sk-..." />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Google Gemini API Key (Optional)</label>
+                <input type="password" id="settings-gemini-key" class="form-input text-xs font-mono" placeholder="AIzaSy..." />
+              </div>
+
+              <button type="button" onclick="OutprixBlogAdmin.saveWebsiteSettings()" class="btn btn-primary text-xs py-2.5">
+                💾 Save Settings
+              </button>
+            </div>
+
+            <div class="border-t border-white/5 pt-4 space-y-3">
+              <h3 class="text-sm font-bold text-white">Database Backup &amp; Recovery</h3>
+              <div class="flex items-center gap-2 flex-wrap">
+                <button type="button" onclick="OutprixBlogAdmin.exportDataBackup()" class="btn btn-sm btn-secondary">
+                  📥 Export JSON Backup
+                </button>
+                <input type="file" id="import-json-input" accept=".json" class="hidden" onchange="OutprixBlogAdmin.importDataBackup(this.files[0])" />
+                <button type="button" onclick="document.getElementById('import-json-input').click()" class="btn btn-sm btn-secondary">
+                  📤 Import JSON Backup
+                </button>
+                <button type="button" onclick="OutprixBlogAdmin.resetToSampleData()" class="btn btn-sm btn-danger">
+                  ⚠️ Reset Demo Data
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== 3. MODALS ==================== -->
+
+  <!-- FILE UPLOAD MODAL -->
+  <div id="upload-modal" class="modal-overlay">
+    <div class="modal-content max-w-lg">
+      <div class="modal-header">
+        <div>
+          <h3 class="text-base font-bold text-white">Upload &amp; Import Blog Content</h3>
+          <p class="text-xs text-slate-400">Accepts DOCX, PDF, TXT, Markdown, and HTML</p>
+        </div>
+        <button onclick="OutprixBlogAdmin.closeModal('upload-modal')" class="text-slate-400 hover:text-white p-1">✕</button>
+      </div>
+      <div class="modal-body space-y-4">
+        <input type="file" id="file-upload-input" accept=".docx,.pdf,.txt,.md,.html" class="hidden" />
+        <div id="upload-dropzone" class="upload-dropzone space-y-3">
+          <div class="text-4xl">📄</div>
+          <div class="text-sm font-bold text-white">Drag &amp; Drop or Click to Select File</div>
+          <div class="text-xs text-slate-400">Supported formats: <span class="text-cyan-400 font-mono">.docx, .pdf, .txt, .md, .html</span></div>
+        </div>
+        <div id="upload-status-msg" class="text-xs font-mono text-center text-slate-400"></div>
+        <div class="p-3 rounded-xl bg-slate-900 border border-white/5 text-xs text-slate-400 leading-relaxed">
+          <strong>Workflow:</strong> Content will be parsed into the editor as a <strong>Draft</strong>, allowing you to review headings, configure SEO metadata, select an author, and publish or schedule.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="OutprixBlogAdmin.closeModal('upload-modal')" class="btn btn-sm btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLIC BLOG LIVE PREVIEW MODAL -->
+  <div id="preview-modal" class="modal-overlay">
+    <div class="modal-content max-w-4xl" style="max-height: 94vh;">
+      <div class="modal-header">
+        <div class="flex items-center gap-2">
+          <span class="badge badge-category">Public Article Preview</span>
+          <span class="text-xs text-slate-400 font-mono">Simulated public page view</span>
+        </div>
+        <button onclick="OutprixBlogAdmin.closeModal('preview-modal')" class="text-slate-400 hover:text-white p-1 text-lg">✕</button>
+      </div>
+      <div id="preview-modal-body" class="modal-body">
+        <!-- Injected by JS -->
+      </div>
+      <div class="modal-footer">
+        <button onclick="OutprixBlogAdmin.closeModal('preview-modal')" class="btn btn-sm btn-secondary">Close Preview</button>
+        <button onclick="OutprixBlogAdmin.publishBlogNow(); OutprixBlogAdmin.closeModal('preview-modal');" class="btn btn-sm btn-emerald">Publish Blog</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Blog Admin Logic -->
+  <script src="/assets/js/blog-admin.js"></script>
+</body>
+</html>

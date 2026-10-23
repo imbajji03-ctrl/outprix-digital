@@ -1,4 +1,11 @@
 User-agent: *
+Disallow: /admin/
+Disallow: /admin
+Disallow: /seo-dashboard.html
+Disallow: /blog-admin.html
 Allow: /
+Allow: /blog
+Allow: /blog/
+Allow: /blog/post
 
 Sitemap: https://outprixdigital.shop/sitemap.xml
